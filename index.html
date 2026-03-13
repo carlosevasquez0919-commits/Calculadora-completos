@@ -7,114 +7,144 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="app-shell">
-    <!-- Columna principal: formulario, feedback y resultados -->
-    <section class="panel panel-form">
-      <div class="panel-copy">
-        <p class="eyebrow">Planifica tu compra</p>
+  <main class="app">
+    <header class="app-header">
+      <div class="header-copy">
+        <p class="eyebrow">Herramienta utilitaria</p>
         <h1>CALCULADORA DE COMPLETOS</h1>
-        <p class="subtitle">Calcula cuánto comprar para tu junta.</p>
+        <p class="subtitle">Calcula exactamente cuánto comprar para tu junta.</p>
       </div>
 
-      <form class="calculator-form" id="calculator-form" novalidate>
-        <div class="field-grid">
-          <label class="field">
-            <span>Personas</span>
-            <input id="personas" name="personas" type="number" min="1" step="1" value="6" inputmode="numeric" required>
-          </label>
+      <div class="status-card" aria-hidden="true">
+        <span class="status-dot"></span>
+        <div>
+          <strong>Auto cálculo activo</strong>
+          <p>Los resultados se actualizan al instante mientras editas.</p>
+        </div>
+      </div>
+    </header>
 
-          <label class="field">
-            <span>Completos por persona</span>
-            <input id="completos" name="completos" type="number" min="1" step="1" value="2" inputmode="numeric" required>
-          </label>
+    <section class="workspace-grid">
+      <section class="panel config-panel">
+        <div class="panel-heading">
+          <p class="section-kicker">Configuración</p>
+          <h2>Define la compra</h2>
+          <p class="section-copy">Completa estos datos y revisa el resumen en tiempo real.</p>
         </div>
 
-        <label class="field">
-          <span>Tipo de completo</span>
-          <select id="tipo" name="tipo">
-            <option value="italiano">Italiano</option>
-            <option value="completo">Completo</option>
-            <option value="dinamico">Dinámico</option>
-          </select>
-        </label>
+        <form class="calculator-form" id="calculator-form" novalidate>
+          <div class="field-grid">
+            <label class="field">
+              <span>Personas</span>
+              <input id="personas" name="personas" type="number" min="1" step="1" value="6" inputmode="numeric" required>
+            </label>
 
-        <label class="checkbox-field">
-          <input id="mulitas" name="mulitas" type="checkbox">
-          <span>Las paltas están mulitas</span>
-        </label>
-
-        <div class="button-row">
-          <button type="submit" class="btn btn-primary">Calcular</button>
-          <button type="button" class="btn btn-secondary" id="reset-btn">Limpiar</button>
-          <button type="button" class="btn btn-ghost" id="copy-btn">Copiar lista</button>
-        </div>
-
-        <p class="feedback" id="feedback" aria-live="polite"></p>
-      </form>
-
-      <section class="results-section" aria-live="polite" aria-atomic="true">
-        <div class="results-header">
-          <div>
-            <p class="results-label">Resumen de compra</p>
-            <h2 id="results-title">12 completos en total</h2>
+            <label class="field">
+              <span>Completos por persona</span>
+              <input id="completos" name="completos" type="number" min="1" step="1" value="2" inputmode="numeric" required>
+            </label>
           </div>
-          <div class="pill" id="results-type">Italiano</div>
+
+          <label class="field">
+            <span>Tipo de completo</span>
+            <select id="tipo" name="tipo">
+              <option value="italiano">Italiano</option>
+              <option value="completo">Completo</option>
+              <option value="dinamico">Dinámico</option>
+            </select>
+          </label>
+
+          <label class="checkbox-field">
+            <input id="mulitas" name="mulitas" type="checkbox">
+            <span>Las paltas están mulitas</span>
+          </label>
+
+          <div class="inline-note">
+            <span class="status-dot"></span>
+            <p>Auto cálculo activo. El botón calcular sigue disponible, pero no es obligatorio.</p>
+          </div>
+
+          <div class="button-row">
+            <button type="submit" class="btn btn-secondary">Calcular</button>
+            <button type="button" class="btn btn-ghost" id="reset-btn">Limpiar</button>
+          </div>
+
+          <p class="feedback" id="feedback" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="panel results-panel">
+        <div class="results-hero">
+          <div class="results-copy">
+            <p class="results-label">Resultados</p>
+            <h2 id="results-title">12 completos en total</h2>
+            <p class="results-caption">Estimación base para panes, salchichas y acompañamientos.</p>
+
+            <div class="results-meta">
+              <div class="pill" id="results-type">Italiano</div>
+              <div class="subtle-pill">Auto cálculo</div>
+            </div>
+          </div>
+
+          <div class="hero-visual" aria-hidden="true">
+            <svg viewBox="0 0 420 220" role="presentation">
+              <defs>
+                <linearGradient id="bunTop" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#f3f4f6" />
+                  <stop offset="100%" stop-color="#d1d5db" />
+                </linearGradient>
+                <linearGradient id="bunBottom" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#e5e7eb" />
+                  <stop offset="100%" stop-color="#9ca3af" />
+                </linearGradient>
+                <linearGradient id="sausage" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#6b7280" />
+                  <stop offset="100%" stop-color="#374151" />
+                </linearGradient>
+              </defs>
+
+              <ellipse cx="210" cy="190" rx="150" ry="22" fill="#d1d5db" opacity="0.45"></ellipse>
+              <rect x="78" y="44" rx="44" ry="44" width="264" height="66" fill="url(#bunTop)"></rect>
+              <rect x="108" y="106" rx="16" ry="16" width="204" height="12" fill="#ffffff"></rect>
+              <rect x="102" y="118" rx="18" ry="18" width="216" height="20" fill="#cbd5e1"></rect>
+              <rect x="96" y="136" rx="18" ry="18" width="228" height="18" fill="#94a3b8"></rect>
+              <rect x="116" y="150" rx="18" ry="18" width="188" height="22" fill="url(#sausage)"></rect>
+              <rect x="82" y="164" rx="22" ry="22" width="256" height="38" fill="url(#bunBottom)"></rect>
+            </svg>
+          </div>
         </div>
 
         <div class="result-cards" id="result-cards"></div>
 
-        <div class="shopping-list-card">
+        <section class="shopping-list-card" id="shopping-list-card">
           <div class="shopping-list-header">
-            <h3>Lista para copiar</h3>
-            <span id="shopping-list-count">4 ingredientes base</span>
+            <div>
+              <p class="section-kicker">Lista de compra</p>
+              <h3>Lista lista para copiar</h3>
+            </div>
+
+            <div class="shopping-actions">
+              <span id="shopping-list-count">4 items calculados</span>
+              <button type="button" class="btn btn-primary btn-copy" id="copy-btn">Copiar lista</button>
+            </div>
           </div>
-          <pre id="shopping-list-output"></pre>
-        </div>
+
+          <div class="shopping-list-shell">
+            <pre id="shopping-list-output"></pre>
+          </div>
+        </section>
       </section>
     </section>
-
-    <!-- Columna visual: ilustracion decorativa del completo -->
-    <aside class="panel panel-visual" aria-hidden="true">
-      <div class="visual-card">
-        <div class="visual-badge">Referencia visual</div>
-        <div class="completo-scene">
-          <div class="plate"></div>
-          <div class="completo-illustration">
-            <div class="bun bun-top"></div>
-            <div class="ingredient ingredient-mayo"></div>
-            <div class="ingredient ingredient-avocado"></div>
-            <div class="ingredient ingredient-tomato"></div>
-            <div class="sausage"></div>
-            <div class="bun bun-bottom"></div>
-          </div>
-        </div>
-
-        <div class="visual-copy">
-          <h2>Una vista simple del completo</h2>
-          <p>
-            Ajusta personas, cantidad y tipo. La calculadora estima lo esencial para comprar
-            con menos margen de error.
-          </p>
-        </div>
-
-        <div class="visual-notes">
-          <p>Auto-calculo en cada cambio</p>
-          <p>Tomates y paltas en kilos y unidades</p>
-          <p>Lista lista para copiar</p>
-        </div>
-      </div>
-    </aside>
   </main>
 
-  <!-- Plantilla reutilizable para las tarjetas de resultados -->
   <template id="result-card-template">
     <article class="result-card">
-      <div class="result-icon"></div>
-      <div class="result-content">
+      <div class="result-top">
+        <div class="result-icon"></div>
         <p class="result-name"></p>
-        <strong class="result-value"></strong>
-        <small class="result-note"></small>
       </div>
+      <strong class="result-value"></strong>
+      <small class="result-note"></small>
     </article>
   </template>
 

@@ -11,6 +11,8 @@ const APP_CONFIG = {
     listCopied: "Lista copiada al portapapeles.",
     copyFailed: "No se pudo copiar la lista automaticamente.",
     formReset: "Valores restablecidos.",
+    copyButtonDefault: "Copiar lista",
+    copyButtonSuccess: "Lista copiada",
   },
   ingredientOrder: ["salchicha", "pan", "tomate", "palta", "chucrut", "americana", "mayonesa"],
   completoTypes: {
@@ -119,11 +121,16 @@ function createDomBindings() {
     cardsContainer: getElement("#result-cards"),
     shoppingListOutput: getElement("#shopping-list-output"),
     shoppingListCount: getElement("#shopping-list-count"),
+    shoppingListCard: getElement("#shopping-list-card"),
     cardTemplate: getElement("#result-card-template"),
   };
 }
 
 const format = {
+  metric(value) {
+    return `${Math.round(value)}`;
+  },
+
   count(value, singular, plural) {
     const rounded = Math.round(value);
     return `${rounded} ${rounded === 1 ? singular : plural}`;
@@ -131,6 +138,10 @@ const format = {
 
   weight(value, unitLabel) {
     return `${value.toFixed(2)} ${unitLabel}`;
+  },
+
+  weightMetric(value) {
+    return `${value.toFixed(2)} kg`;
   },
 
   approximation(value, ingredient) {
@@ -234,7 +245,7 @@ function buildIngredientDisplayModel(ingredientKey, result) {
   if (ingredient.kind === "count") {
     return {
       key: ingredientKey,
-      value: format.count(amount, ingredient.singular, ingredient.plural),
+      value: format.metric(amount),
       note: ingredient.cardNote({ totalCompletos: result.totalCompletos }),
     };
   }
@@ -242,7 +253,7 @@ function buildIngredientDisplayModel(ingredientKey, result) {
   if (ingredient.kind === "weight") {
     return {
       key: ingredientKey,
-      value: format.weight(amount, ingredient.unitLabel),
+      value: format.weightMetric(amount),
       note: format.approximation(amount, ingredient),
     };
   }
@@ -330,6 +341,14 @@ function setFeedback(dom, message = "", tone = "") {
   }
 }
 
+function setCopyState(dom, isCopied) {
+  dom.shoppingListCard.classList.toggle("is-copied", isCopied);
+  dom.copyButton.classList.toggle("is-copied", isCopied);
+  dom.copyButton.textContent = isCopied
+    ? APP_CONFIG.feedback.copyButtonSuccess
+    : APP_CONFIG.feedback.copyButtonDefault;
+}
+
 function shakeInvalidFields(dom, formValues) {
   const fieldsToCheck = [
     { input: dom.personasInput, value: formValues.personas },
@@ -376,9 +395,24 @@ async function copyTextToClipboard(text) {
 }
 
 function createApp(dom) {
+  let copyFeedbackTimer = null;
+
+  function resetCopyState() {
+    window.clearTimeout(copyFeedbackTimer);
+    setCopyState(dom, false);
+  }
+
+  function showCopySuccessState() {
+    resetCopyState();
+    setCopyState(dom, true);
+    copyFeedbackTimer = window.setTimeout(() => setCopyState(dom, false), 1600);
+  }
+
   function calculateAndRender(options = {}) {
     const formValues = getFormValues(dom);
     const validation = validateFormValues(formValues);
+
+    resetCopyState();
 
     if (!validation.valid) {
       setFeedback(dom, validation.message, "error");
@@ -407,8 +441,10 @@ function createApp(dom) {
 
     try {
       await copyTextToClipboard(buildShoppingListText(result));
+      showCopySuccessState();
       setFeedback(dom, APP_CONFIG.feedback.listCopied, "success");
     } catch (error) {
+      resetCopyState();
       setFeedback(dom, APP_CONFIG.feedback.copyFailed, "error");
     }
   }
